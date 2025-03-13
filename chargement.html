@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chargement...</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f3f4f6, #e1e7f0); /* Dégradé doux, léger et moderne */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            color: #333; /* Texte sombre pour plus de lisibilité */
+        }
+
+        .loading-text {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #555; /* Texte légèrement plus sombre */
+            text-align: center;
+        }
+
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 6px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #3498db; /* Couleur bleue pour le loader */
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-footer {
+            position: absolute;
+            bottom: 20px;
+            font-size: 14px;
+            color: #888; /* Couleur plus douce pour le texte du bas */
+            text-align: center;
+            width: 100%;
+        }
+
+        .loading-footer a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .loading-footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-text" id="loadingText">Chargement en cours...</div>
+    <div class="loader" id="loader"></div>
+    <div class="loading-footer" id="footerText">
+        Veuillez patienter, vos paiements sont en cours d'annulation
+    </div>
+
+    <script>
+        setTimeout(() => {
+            document.getElementById("loadingText").textContent = "Merci d'avoir utilisé ce service";
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("footerText").style.display = "none";
+        }, 30000); // Arrêter le chargement après 30 secondes et masquer le message de paiement
+    </script>
+</body>
+</html>

